@@ -9,16 +9,13 @@ def main():
     grafo.insertNode(3)
     grafo.insertNode(4)
     grafo.insertNode(5)
-
     grafo.insertAresta(1,2)
     grafo.insertAresta(1,3)
     grafo.insertAresta(2,3)
-
     grafo.insertAresta(3,4)
-
     grafo.insertAresta(4,5)
-
-
+    
     grafo.printGraph()
-
+    
+    print grafo.getVertice()
 main()
