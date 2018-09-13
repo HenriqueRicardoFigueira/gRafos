@@ -4,6 +4,8 @@ from Graph import Vertice
 
 def main():
     g = Graph()
+
+    #criacao de vertices
     a = Vertice("a")
     g.insertNode(a)
     b = Vertice("b")
@@ -22,6 +24,7 @@ def main():
     g.insertNode(h)
 
     g.digrafo=1
+    
     #insere adjascencia
     g.insereAresta(a,b)
     g.insereAresta(a,f)
@@ -30,6 +33,19 @@ def main():
     g.insereAresta(b,d)
     g.insereAresta(d,e)
     g.insereAresta(gr,h)
-    g.printGraph()         
     
+
+    #teste busca
+    g.buscaLargura(a)
+    g.printTempoDescoberta()
+    g.buscaProfundidade()
+
+
+    # teste print
+    g.printGraph()
+    g.printAdjacencia()   
+    g.printVetorDistancia()
+    g.printTempoDescoberta()
+
+
 main()
