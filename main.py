@@ -3,33 +3,33 @@ from Graph import Vertice
 
 
 def main():
-
+    g = Graph()
     a = Vertice("a")
-    '''Graph.insertNode(a)
+    g.insertNode(a)
     b = Vertice("b")
-    Graph.insertNode(b)
+    g.insertNode(b)
     c = Vertice("c")
-    Graph.insertNode(c)
+    g.insertNode(c)
     d = Vertice("d")
-    Graph.insertNode(d)
+    g.insertNode(d)
     e = Vertice("e")
-    Graph.insertNode(e)
+    g.insertNode(e)
     f = Vertice("f")
-    Graph.insertNode(f)
-    g = Vertice("g")
-    Graph.insertNode(g)
+    g.insertNode(f)
+    gr = Vertice("g")
+    g.insertNode(gr)
     h = Vertice("h")
-    Graph.insertNode(h)
+    g.insertNode(h)
 
-    Graph.digrafo=1
+    g.digrafo=1
     #insere adjascencia
-    Graph.insereAresta(a,b)
-    Graph.insereAresta(a,f)
-    Graph.insereAresta(b,g)
-    Graph.insereAresta(b,c)
-    Graph.insereAresta(b,d)
-    Graph.insereAresta(d,e)
-    Graph.insereAresta(g,h)
-    grafo.printGraph()          '''
+    g.insereAresta(a,b)
+    g.insereAresta(a,f)
+    g.insereAresta(b,gr)
+    g.insereAresta(b,c)
+    g.insereAresta(b,d)
+    g.insereAresta(d,e)
+    g.insereAresta(gr,h)
+    g.printGraph()         
     
 main()

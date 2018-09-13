@@ -1,8 +1,8 @@
 import sys
 class Vertice:
-    def __init__(self, name, valor=0.0):
+    def __init__(self, name):
         self.name = name
-        self.valor = valor
+        #self.valor = valor
         self.cor = "branco"
         self.predecessor = None
         self.tempDescoberta = -1
@@ -23,7 +23,7 @@ class Graph:
     def insertNode(self, vertice):
         if(1 if self.verificaVertice(vertice) == None else 0):
             self.grafo.append(vertice)
-            self.adj.append([vertice,[]])
+            self.adjacentes.append([vertice,[]])
 
     #nomePosicao
     def achaPosicao(self, vertice):
@@ -91,9 +91,9 @@ class Graph:
     '''
     #printa o grafo
     def printGraph(self):
-        print("\nGrafo: "+PyGraph.getOrdem()+":")
+        print("\nGrafo: "+self.getOrdem()+":")
         sys.stdout.write("[")
-        for vertice in PyGraph.grafo:
+        for vertice in self.grafo:
             sys.stdout.write("- "+str(vertice)+" ")
         print("]")
     
