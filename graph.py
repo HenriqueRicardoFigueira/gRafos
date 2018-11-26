@@ -38,14 +38,8 @@ def getbffList(id):
     return userlistFriend
 
 def getgameList(id):
-    final = db[user_id].aggregate([
-        {"$match": {"friend_List.user_id": id}},
-        {"$addFields" : {"game_List":{"$filter":{
-            "input": "$game_List",
-            "as": "game_List",
-            "cond": {"$eq": ["$$game_List.user_id", id]}
-        }}}}
-    ])
+    global user_id
+    final = db[user_id].find({"user_id":user_id},{"friend_List":{"$elemMatch":{"user_id": id}}})
 
     bookingfinal = dumps(final)
     bookingfinal2 = loads(bookingfinal)
@@ -60,7 +54,7 @@ def getgameList(id):
 client = MongoClient('localhost', 27017)
 db = client["steam_api"]
 
-user_id = "76561198004689792"
+user_id = "76561198101080649"
 
 G = nx.Graph()
 
@@ -109,7 +103,7 @@ for (node, val) in G.degree():
 
 sorted_x = sorted(aux.items(), key=operator.itemgetter(1))
 
-sort = sorted_x[-10:-1]
+sort = sorted_x[-11:-1]
 
 sort_aux  = []
 for item in sort:
@@ -125,24 +119,50 @@ for item in sort:
 x = sort_aux
 
 x = byteify(x)
-
 gamesP = {}
 
 for id in x:
     aux = getgameList(id)
-    games = []
-    for game in aux:
-        x = game.get("appid")
-        games.append(x)
-    gamesP[id] = games
+    if aux != None:
+        games = []
+        for game in aux:
+            x = game.get("appid")
+            games.append(x)
+        gamesP[id] = games
 
-print gamesP
 
-# graph = [(0, 1), (1, 5), (1, 7), (4, 5), (4, 8), (1, 6), (3, 7), (5, 9),
-#          (2, 4), (0, 4), (2, 5), (3, 6), (8, 9)]
+gameList = []
+gameFreq = {}
 
-# # you may name your edge labels
-# labels = map(chr, range(65, 65+len(graph)))
+for id in gamesP.keys():
+    user_list_games = gamesP.get(id)
+    for game_user in user_list_games:
+        if game_user in gameList:
+            gameFreq[game_user] = gameFreq[game_user]+1
+        else:
+            gameFreq[game_user] = 1
+            gameList.append(game_user)
 
-# # if edge labels is not specified, numeric labels (0, 1, 2...) will be used
-# draw_graph(graph)
+user_gamesAux = db[user_id].find({"user_id":user_id},{"game_List":1,"_id":0})
+
+user_gamesAuxNV1 = dumps(user_gamesAux)
+user_gamesAuxNV2 = loads(user_gamesAuxNV1)
+
+user_gamesAuxNV2 = byteify(user_gamesAuxNV2)[0]
+
+user_gamesAuxNV2 = user_gamesAuxNV2.get("game_List")
+
+games_user = []
+for game in user_gamesAuxNV2:
+    x = game.get("appid")
+    games_user.append(x)
+
+gameFreqAux = []
+for k in gameList:
+    if gameFreq[k] > 1:
+        gameFreqAux.append(k)
+
+for gameFreq in gameFreqAux:
+    if gameFreq not in games_user:
+        print gameFreq
+

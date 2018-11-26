@@ -16,7 +16,7 @@ from joblib import Parallel, delayed
 
 #steam api config
 api_key = "7CA772628D17EB61985E3FBF61D124B6"
-name = "vnc10"
+name = "bobramixx"
 
 #banco config
 client = MongoClient('localhost', 27017)
@@ -103,7 +103,7 @@ usergames_List = usergames_ListAuxNv2
 
 
 for i in usergames_List:
-    cursor.update({"user_id":user_id},{"$push":{"game_List":{"user_id":i}}})
+    cursor.update({"user_id":user_id},{"$push":{"game_List":i}})
 
 # print responseGames
 # cursor.update({"user_id":user_id},{"$push":{"game_List":responseGames.json()}})
