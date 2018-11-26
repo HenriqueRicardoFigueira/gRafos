@@ -46,6 +46,23 @@ def draw_graph(G, labels=None, graph_layout='shell',
 
     # show graph
     plt.show()
+
+def getbffList(id):
+    final = db[user_id].aggregate([
+        {"$match": {"friend_List.user_id": id}},
+        {"$addFields" : {"friend_List":{"$filter":{
+            "input": "$friend_List",
+            "as": "friend_List",
+            "cond": {"$eq": ["$$friend_List.user_id", id]}
+        }}}}
+    ])
+
+    bookingfinal = dumps(final)
+    bookingfinal2 = loads(bookingfinal)
+
+    userlistFriend = bookingfinal2[0].get("friend_List")[0].get("friend_List")
+    return userlistFriend
+
 #banco
 client = MongoClient('localhost', 27017)
 db = client["steam_api"]
@@ -73,27 +90,18 @@ for node in cleanFriends:
 
 # print len(cleanFriends)
 
-id = cleanFriends[0]
-
+x = 0
 for id in cleanFriends:
-    final = db[user_id].aggregate([
-        {"$match": {"friend_List.user_id": id}},
-        {"$addFields" : {"friend_List":{"$filter":{
-            "input": "$friend_List",
-            "as": "friend_List",
-            "cond": {"$eq": ["$$friend_List.user_id", id]}
-        }}}}
-    ])
+    
+    userlistFriend = getbffList(id)
 
-    bookingfinal = dumps(final)
-    bookingfinal2 = loads(bookingfinal)
-
-
-    userlistFriend = bookingfinal2[0].get("friend_List")[0].get("friend_List")
     for node in userlistFriend:
         G.add_node(node)
-        if node in cleanFriends:
-            G.add_edge(id, node)
+
+    # print userlistFriend
+    # for node in userlistFriend:
+    #     if node in cleanFriends:
+    #         G.add_edge(id, node)
 
 
 # arq = open("agregationReturn.json","w")
