@@ -48,6 +48,16 @@ def draw_graph(G, labels=None, graph_layout='shell',
 
     # show graph
     plt.show()
+def byteify(input):
+    if isinstance(input, dict):
+        return {byteify(key): byteify(value)
+                for key, value in input.iteritems()}
+    elif isinstance(input, list):
+        return [byteify(element) for element in input]
+    elif isinstance(input, unicode):
+        return input.encode('utf-8')
+    else:
+        return input
 
 def getbffList(id):
     final = db[user_id].aggregate([
@@ -63,6 +73,25 @@ def getbffList(id):
     bookingfinal2 = loads(bookingfinal)
 
     userlistFriend = bookingfinal2[0].get("friend_List")[0].get("friend_List")
+    return userlistFriend
+
+def getgameList(id):
+    final = db[user_id].aggregate([
+        {"$match": {"friend_List.user_id": id}},
+        {"$addFields" : {"game_List":{"$filter":{
+            "input": "$game_List",
+            "as": "game_List",
+            "cond": {"$eq": ["$$game_List.user_id", id]}
+        }}}}
+    ])
+
+    bookingfinal = dumps(final)
+    bookingfinal2 = loads(bookingfinal)
+    try:
+        userlistFriend = bookingfinal2[0].get("friend_List")[0].get("game_List")
+    except IndexError:
+        userlistFriend = []
+        pass
     return userlistFriend
 
 #banco
@@ -93,16 +122,16 @@ for node in cleanFriends:
 # print len(cleanFriends)
 
 for id in cleanFriends:
-    
+
     userlistFriend = getbffList(id)
 
-    # for node in userlistFriend:
-    #     G.add_node(node)
+    #for node in userlistFriend:
+        #G.add_node(node)
 
-    
+    # print userlistFriend
     for node in userlistFriend:
-        if node in cleanFriends:
-            G.add_edge(id, node)
+         if node in cleanFriends:
+             G.add_edge(id, node)
 
 
 # arq = open("agregationReturn.json","w")
@@ -126,7 +155,24 @@ for item in sort:
 # nx.draw(G, with_labels=False, font_weight='bold')
 # nx.draw_shell(G, with_labels=True, font_weight='bold')
 # plt.show()
+#nx.draw(G, with_labels=False, font_weight='bold')
+# nx.draw_shell(G, with_labels=True, font_weight='bold')
+#plt.show()
+d = clique.max_clique(G)
+x = list(d)
+x = byteify(x)
 
+gamesP = {}
+
+for id in x:
+    aux = getgameList(id)
+    games = []
+    for game in aux:
+        x = game.get("appid")
+        games.append(x)
+    gamesP[id] = games
+
+print gamesP
 
 # graph = [(0, 1), (1, 5), (1, 7), (4, 5), (4, 8), (1, 6), (3, 7), (5, 9),
 #          (2, 4), (0, 4), (2, 5), (3, 6), (8, 9)]
