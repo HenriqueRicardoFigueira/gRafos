@@ -3,9 +3,11 @@ from bson.json_util import dumps, loads
 from bson.raw_bson import RawBSONDocument
 import bsonjs
 import networkx as nx
+from networkx.algorithms.approximation import clique
 import Tkinter as tk
 import matplotlib.pyplot as plt
 import networkx.drawing
+import operator
 from pymongo import MongoClient
 
 def draw_graph(G, labels=None, graph_layout='shell',
@@ -90,26 +92,40 @@ for node in cleanFriends:
 
 # print len(cleanFriends)
 
-x = 0
 for id in cleanFriends:
     
     userlistFriend = getbffList(id)
 
-    for node in userlistFriend:
-        G.add_node(node)
-
-    # print userlistFriend
     # for node in userlistFriend:
-    #     if node in cleanFriends:
-    #         G.add_edge(id, node)
+    #     G.add_node(node)
+
+    
+    for node in userlistFriend:
+        if node in cleanFriends:
+            G.add_edge(id, node)
 
 
 # arq = open("agregationReturn.json","w")
 # arq.write("{}".format(list(final)))
 
-nx.draw(G, with_labels=False, font_weight='bold')
+# d = nx.coloring.greedy_color(G, strategy='largest_first')
+# d = clique.max_clique(G)
+# d = clique.enumerate_all_cliques(G)
+aux = {}
+for (node, val) in G.degree():
+    aux[node] = val
+
+
+sorted_x = sorted(aux.items(), key=operator.itemgetter(1))
+
+sort = sorted_x[-10:-1]
+
+for item in sort:
+    print type(item)
+    print "https://steamidfinder.com/lookup/{}/".format(item[0])
+# nx.draw(G, with_labels=False, font_weight='bold')
 # nx.draw_shell(G, with_labels=True, font_weight='bold')
-plt.show()
+# plt.show()
 
 
 # graph = [(0, 1), (1, 5), (1, 7), (4, 5), (4, 8), (1, 6), (3, 7), (5, 9),
